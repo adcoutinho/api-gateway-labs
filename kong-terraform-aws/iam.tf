@@ -6,7 +6,7 @@ data "aws_iam_policy_document" "kong-ssm" {
 
   statement {
     actions   = ["ssm:GetParameter"]
-    resources = ["arn:aws:ssm:*:*:parameter/${local.service}/${local.environment}/*"]
+    resources = ["arn:aws:ssm:*:*:parameter/${local.project}/${local.environment}/*"]
   }
 
   statement {
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "kong-ssm" {
 }
 
 resource "aws_iam_role_policy" "kong-ssm" {
-  name = format("%s-%s-ssm", local.service, local.environment)
+  name = format("%s-%s-ssm", local.project, local.environment)
   role = aws_iam_role.kong.id
 
   policy = data.aws_iam_policy_document.kong-ssm.json
@@ -34,11 +34,11 @@ data "aws_iam_policy_document" "kong" {
 }
 
 resource "aws_iam_role" "kong" {
-  name               = format("%s-%s", local.service, local.environment)
+  name               = format("%s-%s", local.project, local.environment)
   assume_role_policy = data.aws_iam_policy_document.kong.json
 }
 
 resource "aws_iam_instance_profile" "kong" {
-  name = format("%s-%s", local.service, local.environment)
+  name = format("%s-%s", local.project, local.environment)
   role = aws_iam_role.kong.id
 }

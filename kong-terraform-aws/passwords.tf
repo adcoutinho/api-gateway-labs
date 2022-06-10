@@ -1,4 +1,4 @@
- 
+
 resource "random_string" "master_password" {
   length  = 32
   special = false

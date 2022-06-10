@@ -1,9 +1,9 @@
 resource "aws_launch_configuration" "kong" {
-  name_prefix          = format("%s-%s-", local.service, local.environment)
-  image_id             = local.ec2_ami[data.aws_region.current.name]
-  instance_type        = local.ec2_instance_type
+  name_prefix          = format("%s-%s-", local.project, local.environment)
+  image_id             = local.ami[data.aws_region.current.name]
+  instance_type        = local.instance_type
   iam_instance_profile = aws_iam_instance_profile.kong.name
-  key_name             = local.ec2_key_name
+  key_name             = local.key_name
 
   security_groups = [
     data.aws_security_group.default.id,
@@ -11,13 +11,13 @@ resource "aws_launch_configuration" "kong" {
   ]
 
   associate_public_ip_address = false
-  enable_monitoring           = true
+  enable_monitoring           = false
   placement_tenancy           = "default"
   user_data                   = data.template_cloudinit_config.cloud-init.rendered
 
   root_block_device {
-    volume_size = local.ec2_root_volume_size
-    volume_type = local.ec2_root_volume_type
+    volume_size = local.volume_size
+    volume_type = local.volume_type
   }
 
   lifecycle {
@@ -26,17 +26,17 @@ resource "aws_launch_configuration" "kong" {
 }
 
 resource "aws_autoscaling_group" "kong" {
-  name                = format("%s-%s", local.service, local.environment)
+  name                = format("%s-%s", local.project, local.environment)
   vpc_zone_identifier = data.aws_subnet_ids.private.ids
 
   launch_configuration = aws_launch_configuration.kong.name
 
-  desired_capacity          = local.asg_desired_capacity
+  desired_capacity          = local.desired_capacity
   force_delete              = false
-  health_check_grace_period = local.asg_health_check_grace_period
+  health_check_grace_period = local.health_check_grace_period
   health_check_type         = "ELB"
-  max_size                  = local.asg_max_size
-  min_size                  = local.asg_min_size
+  max_size                  = local.max_size
+  min_size                  = local.min_size
 
   target_group_arns = compact(
     concat(
@@ -51,27 +51,17 @@ resource "aws_autoscaling_group" "kong" {
 
   tag {
     key                 = "Name"
-    value               = format("%s-%s", var.service, var.environment)
+    value               = format("%s-%s", local.project, local.environment)
     propagate_at_launch = true
   }
   tag {
     key                 = "Environment"
-    value               = var.environment
-    propagate_at_launch = true
-  }
-  tag {
-    key                 = "Description"
-    value               = var.description
-    propagate_at_launch = true
-  }
-  tag {
-    key                 = "Service"
-    value               = var.service
+    value               = local.environment
     propagate_at_launch = true
   }
 
   dynamic "tag" {
-    for_each = var.tags
+    for_each = local.tags
 
     content {
       key                 = tag.key

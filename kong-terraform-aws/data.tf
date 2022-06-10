@@ -1,12 +1,4 @@
 # AWS Data
-data "aws_vpc" "vpc" {
-  state = "available"
-
-  tags = {
-    "Name" = local.vpc_name 
-  }
-}
-
 data "aws_region" "current" {}
 
 data "aws_subnet_ids" "public" {

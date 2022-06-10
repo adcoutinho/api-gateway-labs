@@ -2,7 +2,7 @@
 resource "aws_lb_target_group" "external" {
   count = local.enable_external_lb ? 1 : 0
 
-  name     = format("%s-%s-external", local.service, local.environment)
+  name     = format("%s-%s-external", local.project, local.environment)
   port     = 8000
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.vpc.id
@@ -18,10 +18,8 @@ resource "aws_lb_target_group" "external" {
 
   tags = merge(
     {
-      "Name"        = format("%s-%s-external", local.service, local.environment),
-      "Environment" = local.environment,
-      "Description" = local.description,
-      "Service"     = local.service,
+      "Name"        = format("%s-%s-external", local.project, local.environment),
+      "Environment" = local.environment
     },
     local.tags
   )
@@ -30,7 +28,7 @@ resource "aws_lb_target_group" "external" {
 resource "aws_lb" "external" {
   count = local.enable_external_lb ? 1 : 0
 
-  name     = format("%s-%s-external", local.service, local.environment)
+  name     = format("%s-%s-external", local.project, local.environment)
   internal = false
   subnets  = data.aws_subnet_ids.public.ids
 
@@ -41,10 +39,8 @@ resource "aws_lb" "external" {
 
   tags = merge(
     {
-      "Name"        = format("%s-%s-external", local.service, local.environment),
-      "Environment" = local.environment,
-      "Description" = local.description,
-      "Service"     = local.service,
+      "Name"        = format("%s-%s-external", local.project, local.environment),
+      "Environment" = local.environment
     },
     local.tags
   )
