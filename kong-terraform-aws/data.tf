@@ -3,7 +3,7 @@ data "aws_vpc" "vpc" {
   state = "available"
 
   tags = {
-    "Name" = local.vpc
+    "Name" = local.vpc_name 
   }
 }
 

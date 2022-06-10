@@ -4,7 +4,9 @@ locals {
   manager_host = var.manager_host == "default" ? join("", aws_lb.internal.*.dns_name) : var.manager_host
   portal_host  = var.portal_host == "default" ? join("", aws_lb.internal.*.dns_name) : var.portal_host
 
-
+  # VPC Settings
+  vpc_name = "adclab"
+  
 
   # EC2 Settings 
   ami = "ami-0783b42a4ca25b7de"
