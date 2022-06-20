@@ -6,12 +6,12 @@ data "aws_vpc" "vpc" {
   }
 }
 
-data "aws_subnet_ids" "private_subnets" {
+data "aws_subnet_ids" "public_subnets" {
   vpc_id = data.aws_vpc.vpc.id
 
   filter {
     name   = "tag:Name"
-    values = ["Test APP Private *"]
+    values = ["Test Public *"]
   }
 }
 

@@ -1,4 +1,4 @@
-FROM postgres:12.1
+FROM postgres:10.20
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
