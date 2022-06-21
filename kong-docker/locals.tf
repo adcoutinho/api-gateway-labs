@@ -12,6 +12,7 @@ locals {
   r53_zone_id     = data.aws_route53_zone.public.zone_id
   instance_type   = "t2.medium"
   key_name        = "adcoutinho-tests"
+  kong_instances  = 2
 
   service_ports = {
     "22"   = ["10.0.0.0/8", "192.18.0.0/16", "186.194.105.13/32"]
@@ -21,6 +22,15 @@ locals {
     "8444" = ["10.0.0.0/8", "192.18.0.0/16", "186.194.105.13/32"]
     "9000" = ["10.0.0.0/8", "192.18.0.0/16", "186.194.105.13/32"]
   }
+
+  # RDS Settings
+  allocated_storage = 5
+  engine            = "postgres"
+  engine_version    = "11.15"
+  instance_class    = "db.t3.micro"
+  db_name           = "kong"
+  db_user           = "konguser"
+  db_port           = 5432
 
 
   tags = {
